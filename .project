@@ -24,16 +24,4 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>driverlib</name>
-			<type>2</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Desktop/TivaWare_C_Series-2.1.3.156/driverlib</locationURI>
-		</link>
-		<link>
-			<name>inc</name>
-			<type>2</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Desktop/TivaWare_C_Series-2.1.3.156/inc</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>

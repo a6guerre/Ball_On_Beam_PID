@@ -6,41 +6,41 @@ SHELL = cmd.exe
 
 # Add inputs and outputs from these tool invocations to the build variables 
 S_SRCS += \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/epi_workaround_ccs.s 
+../driverlib/epi_workaround_ccs.s 
 
 C_SRCS += \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/adc.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/aes.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/can.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/comp.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/cpu.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/crc.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/des.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/eeprom.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/emac.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/epi.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/flash.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/fpu.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/gpio.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/hibernate.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/i2c.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/interrupt.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/lcd.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/mpu.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/onewire.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/pwm.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/qei.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/shamd5.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/ssi.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/sw_crc.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/sysctl.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/sysexc.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/systick.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/timer.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/uart.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/udma.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/usb.c \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/watchdog.c 
+../driverlib/adc.c \
+../driverlib/aes.c \
+../driverlib/can.c \
+../driverlib/comp.c \
+../driverlib/cpu.c \
+../driverlib/crc.c \
+../driverlib/des.c \
+../driverlib/eeprom.c \
+../driverlib/emac.c \
+../driverlib/epi.c \
+../driverlib/flash.c \
+../driverlib/fpu.c \
+../driverlib/gpio.c \
+../driverlib/hibernate.c \
+../driverlib/i2c.c \
+../driverlib/interrupt.c \
+../driverlib/lcd.c \
+../driverlib/mpu.c \
+../driverlib/onewire.c \
+../driverlib/pwm.c \
+../driverlib/qei.c \
+../driverlib/shamd5.c \
+../driverlib/ssi.c \
+../driverlib/sw_crc.c \
+../driverlib/sysctl.c \
+../driverlib/sysexc.c \
+../driverlib/systick.c \
+../driverlib/timer.c \
+../driverlib/uart.c \
+../driverlib/udma.c \
+../driverlib/usb.c \
+../driverlib/watchdog.c 
 
 S_DEPS += \
 ./driverlib/epi_workaround_ccs.d 
@@ -187,40 +187,40 @@ S_DEPS__QUOTED += \
 "driverlib\epi_workaround_ccs.d" 
 
 C_SRCS__QUOTED += \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/adc.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/aes.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/can.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/comp.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/cpu.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/crc.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/des.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/eeprom.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/emac.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/epi.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/flash.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/fpu.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/gpio.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/hibernate.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/i2c.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/interrupt.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/lcd.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/mpu.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/onewire.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/pwm.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/qei.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/shamd5.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/ssi.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/sw_crc.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/sysctl.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/sysexc.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/systick.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/timer.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/uart.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/udma.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/usb.c" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/watchdog.c" 
+"../driverlib/adc.c" \
+"../driverlib/aes.c" \
+"../driverlib/can.c" \
+"../driverlib/comp.c" \
+"../driverlib/cpu.c" \
+"../driverlib/crc.c" \
+"../driverlib/des.c" \
+"../driverlib/eeprom.c" \
+"../driverlib/emac.c" \
+"../driverlib/epi.c" \
+"../driverlib/flash.c" \
+"../driverlib/fpu.c" \
+"../driverlib/gpio.c" \
+"../driverlib/hibernate.c" \
+"../driverlib/i2c.c" \
+"../driverlib/interrupt.c" \
+"../driverlib/lcd.c" \
+"../driverlib/mpu.c" \
+"../driverlib/onewire.c" \
+"../driverlib/pwm.c" \
+"../driverlib/qei.c" \
+"../driverlib/shamd5.c" \
+"../driverlib/ssi.c" \
+"../driverlib/sw_crc.c" \
+"../driverlib/sysctl.c" \
+"../driverlib/sysexc.c" \
+"../driverlib/systick.c" \
+"../driverlib/timer.c" \
+"../driverlib/uart.c" \
+"../driverlib/udma.c" \
+"../driverlib/usb.c" \
+"../driverlib/watchdog.c" 
 
 S_SRCS__QUOTED += \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/epi_workaround_ccs.s" 
+"../driverlib/epi_workaround_ccs.s" 
 
 

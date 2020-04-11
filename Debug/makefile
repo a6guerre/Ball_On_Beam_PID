@@ -13,8 +13,12 @@ ORDERED_OBJS += \
 "./main.obj" \
 "./tm4c123gh6pm_startup_ccs.obj" \
 "./Drivers/HC-S04_Distance_Sensor/HC-S04_Driver.obj" \
+"./Drivers/HC-S04_Distance_Sensor/UART_Driver.obj" \
+"./Drivers/HC-S04_Distance_Sensor/moving_average.obj" \
 "./Drivers/Servo/PWM_Driver.obj" \
 "./algo/PID_driver.obj" \
+"./algo/moving_average_double.obj" \
+"./algo/timing_driver.obj" \
 "./driverlib/adc.obj" \
 "./driverlib/aes.obj" \
 "./driverlib/can.obj" \
@@ -49,8 +53,8 @@ ORDERED_OBJS += \
 "./driverlib/usb.obj" \
 "./driverlib/watchdog.obj" \
 "../tm4c123gh6pm.cmd" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/ccs/Debug/driverlib.lib" \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/rvmdk/driverlib.lib" \
+"../driverlib/ccs/Debug/driverlib.lib" \
+"../driverlib/rvmdk/driverlib.lib" \
 $(GEN_CMDS__FLAG) \
 -llibc.a \
 
@@ -208,8 +212,9 @@ Ball_On_Beam_PID.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "tm4c123gh6pm_startup_ccs.obj" "Drivers\HC-S04_Distance_Sensor\HC-S04_Driver.obj" "Drivers\Servo\PWM_Driver.obj" "algo\PID_driver.obj" "driverlib\adc.obj" "driverlib\aes.obj" "driverlib\can.obj" "driverlib\comp.obj" "driverlib\cpu.obj" "driverlib\crc.obj" "driverlib\des.obj" "driverlib\eeprom.obj" "driverlib\emac.obj" "driverlib\epi.obj" "driverlib\epi_workaround_ccs.obj" "driverlib\flash.obj" "driverlib\fpu.obj" "driverlib\gpio.obj" "driverlib\hibernate.obj" "driverlib\i2c.obj" "driverlib\interrupt.obj" "driverlib\lcd.obj" "driverlib\mpu.obj" "driverlib\onewire.obj" "driverlib\pwm.obj" "driverlib\qei.obj" "driverlib\shamd5.obj" "driverlib\ssi.obj" "driverlib\sw_crc.obj" "driverlib\sysctl.obj" "driverlib\sysexc.obj" "driverlib\systick.obj" "driverlib\timer.obj" "driverlib\uart.obj" "driverlib\udma.obj" "driverlib\usb.obj" "driverlib\watchdog.obj" 
-	-$(RM) "main.d" "tm4c123gh6pm_startup_ccs.d" "Drivers\HC-S04_Distance_Sensor\HC-S04_Driver.d" "Drivers\Servo\PWM_Driver.d" "algo\PID_driver.d" "driverlib\adc.d" "driverlib\aes.d" "driverlib\can.d" "driverlib\comp.d" "driverlib\cpu.d" "driverlib\crc.d" "driverlib\des.d" "driverlib\eeprom.d" "driverlib\emac.d" "driverlib\epi.d" "driverlib\flash.d" "driverlib\fpu.d" "driverlib\gpio.d" "driverlib\hibernate.d" "driverlib\i2c.d" "driverlib\interrupt.d" "driverlib\lcd.d" "driverlib\mpu.d" "driverlib\onewire.d" "driverlib\pwm.d" "driverlib\qei.d" "driverlib\shamd5.d" "driverlib\ssi.d" "driverlib\sw_crc.d" "driverlib\sysctl.d" "driverlib\sysexc.d" "driverlib\systick.d" "driverlib\timer.d" "driverlib\uart.d" "driverlib\udma.d" "driverlib\usb.d" "driverlib\watchdog.d" 
+	-$(RM) "main.obj" "tm4c123gh6pm_startup_ccs.obj" "Drivers\HC-S04_Distance_Sensor\HC-S04_Driver.obj" "Drivers\HC-S04_Distance_Sensor\UART_Driver.obj" "Drivers\HC-S04_Distance_Sensor\moving_average.obj" "Drivers\Servo\PWM_Driver.obj" "algo\PID_driver.obj" "algo\moving_average_double.obj" "algo\timing_driver.obj" "driverlib\adc.obj" "driverlib\aes.obj" "driverlib\can.obj" "driverlib\comp.obj" "driverlib\cpu.obj" "driverlib\crc.obj" "driverlib\des.obj" "driverlib\eeprom.obj" "driverlib\emac.obj" "driverlib\epi.obj" "driverlib\epi_workaround_ccs.obj" "driverlib\flash.obj" "driverlib\fpu.obj" "driverlib\gpio.obj" "driverlib\hibernate.obj" "driverlib\i2c.obj" "driverlib\interrupt.obj" "driverlib\lcd.obj" "driverlib\mpu.obj" "driverlib\onewire.obj" "driverlib\pwm.obj" "driverlib\qei.obj" "driverlib\shamd5.obj" "driverlib\ssi.obj" "driverlib\sw_crc.obj" "driverlib\sysctl.obj" "driverlib\sysexc.obj" "driverlib\systick.obj" "driverlib\timer.obj" "driverlib\uart.obj" "driverlib\udma.obj" "driverlib\usb.obj" 
+	-$(RM) "driverlib\watchdog.obj" 
+	-$(RM) "main.d" "tm4c123gh6pm_startup_ccs.d" "Drivers\HC-S04_Distance_Sensor\HC-S04_Driver.d" "Drivers\HC-S04_Distance_Sensor\UART_Driver.d" "Drivers\HC-S04_Distance_Sensor\moving_average.d" "Drivers\Servo\PWM_Driver.d" "algo\PID_driver.d" "algo\moving_average_double.d" "algo\timing_driver.d" "driverlib\adc.d" "driverlib\aes.d" "driverlib\can.d" "driverlib\comp.d" "driverlib\cpu.d" "driverlib\crc.d" "driverlib\des.d" "driverlib\eeprom.d" "driverlib\emac.d" "driverlib\epi.d" "driverlib\flash.d" "driverlib\fpu.d" "driverlib\gpio.d" "driverlib\hibernate.d" "driverlib\i2c.d" "driverlib\interrupt.d" "driverlib\lcd.d" "driverlib\mpu.d" "driverlib\onewire.d" "driverlib\pwm.d" "driverlib\qei.d" "driverlib\shamd5.d" "driverlib\ssi.d" "driverlib\sw_crc.d" "driverlib\sysctl.d" "driverlib\sysexc.d" "driverlib\systick.d" "driverlib\timer.d" "driverlib\uart.d" "driverlib\udma.d" "driverlib\usb.d" "driverlib\watchdog.d" 
 	-$(RM) "driverlib\epi_workaround_ccs.d" 
 	-@echo 'Finished clean'
 	-@echo ' '

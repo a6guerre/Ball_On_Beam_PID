@@ -13,16 +13,21 @@
 #include "driverlib/gpio.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/uart.h"
+#include "moving_average.h"
+#include "UART_Driver.h"
 
 uint16_t hi;
 uint16_t pulseWidth = 0; // Needs to be this data type to be congruent with register values.
 uint16_t risingEdge;
 uint16_t distanceCM;
+uint16_t position_arr[100];
+uint16_t mean_distance;
 
 unsigned int overFlowCount;
 unsigned int risingEdgeMeasured = 0;
 int measured = 0;
 int count;
+static int sample_count;
 
 //int main(void)
 //{
@@ -41,7 +46,7 @@ int count;
 //    return 0;
 //}
 
-void UART_Init(void){
+/*void UART_Init(void){
   SYSCTL_RCGC1_R |= SYSCTL_RCGC1_UART0; // activate UART0
   SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOA; // activate port A
   UART0_CTL_R &= ~UART_CTL_UARTEN;      // disable UART
@@ -54,11 +59,39 @@ void UART_Init(void){
   GPIO_PORTA_DEN_R |= 0x03;             // enable digital I/O on PA1-0
 }
 
+void UART1_Init(void){
+  SYSCTL_RCGC1_R |= SYSCTL_RCGC1_UART1; // activate UART0
+
+  UART1_CTL_R &= ~UART_CTL_UARTEN;      // disable UART
+  UART1_IBRD_R = 6;                    // IBRD = int(12,500,000 / (16 * 115,200)) = int(6.7816)
+  UART1_FBRD_R = 50;                     // FBRD = int(0.7816 * 64 + 0.5) = 8
+                                        // 8 bit word length (no parity bits, one stop bit, FIFOs)
+  UART1_LCRH_R = (UART_LCRH_WLEN_8|UART_LCRH_FEN);
+  UART1_CTL_R |= UART_CTL_UARTEN;       // enable UART
+  GPIO_PORTB_AFSEL_R |= 0x03;           // enable alt funct on PA1-0
+  GPIO_PORTB_DEN_R |= 0x03;             // enable digital I/O on PA1-0
+}
+
 void UART_OutChar(unsigned char data){
   while((UART0_FR_R&UART_FR_TXFF) != 0);
   UART0_DR_R = data;
 }
 
+void UART1_OutChar(unsigned char data){
+  while((UART1_FR_R&UART_FR_TXFF) != 0);
+  UART1_DR_R = data;
+}
+
+void UART1_OutUDec(unsigned long n){
+// This function uses recursion to convert decimal number
+//   of unspecified length as an ASCII string
+  if(n >= 10){
+    UART1_OutUDec(n/10);
+    n = n%10;
+  }
+  UART1_OutChar(n+'0');
+}*/
+/*
 void UART_OutUDec(unsigned long n){
 // This function uses recursion to convert decimal number
 //   of unspecified length as an ASCII string
@@ -66,8 +99,8 @@ void UART_OutUDec(unsigned long n){
     UART_OutUDec(n/10);
     n = n%10;
   }
-  UART_OutChar(n+'0'); /* n is between 0 and 9 */
-}
+  UART_OutChar(n+'0'); // n is between 0 and 9
+}*/
 
 void TriggerSignalEnable(){
     SYSCTL_RCGC2_R |= 0x01;
@@ -130,22 +163,100 @@ void Restart_measurement()
    TIMER1_CTL_R |= 0x01;             //  "Schedule" start trigger after TIME1A Timeout
 }
 
+/*void pop_and_push(uint16_t *position_arr, uint16_t val)
+{
+   int i;
+   int len = sizeof(position_arr)/sizeof(uint16_t);
+   for (i = 0; i < len - 1; ++i)
+   {
+      position_arr[i + 1] = position_arr[i];
+   }
+   position_arr[0] = val;
+
+}
+
+void compute_sum(uint16_t *arr, int *sum, int len)
+{
+   int i;
+   *sum = 0;
+   for(i = 0;  i < len; ++i)
+   {
+      *sum += arr[i];
+   }
+}
+
+void print_mean(uint16_t mean)
+{
+  UART_OutUDec(mean);
+  UART_OutChar('\n');
+}
+
+uint16_t compute_average(uint16_t *position_arr)
+{
+   int len = sizeof(position_arr)/sizeof(uint16_t);
+   int sum;
+   compute_sum(position_arr, &sum, len);
+   uint16_t mean = (uint16_t)(sum/len);
+   print_mean(mean);
+   return (uint16_t)(sum/len);
+}
+
+void populate_array(uint16_t measured_distance, int sample_count, uint16_t *position_arr)
+{
+   if (sample_count < (sizeof(position_arr)/sizeof(uint16_t) + 1))
+   {
+     position_arr[sample_count - 1] = measured_distance;
+   }
+   else
+   {
+      pop_and_push(position_arr, measured_distance);
+   }
+}*/
+
 void Timer0A_Handler(void){
+   ++sample_count;
+   int len;
    if(!risingEdgeMeasured){
-      TIMER0_ICR_R |= TIMER_ICR_CAECINT; //acknowledge timer0A capture flag
+      TIMER0_ICR_R |= TIMER_ICR_CAECINT; // Acknowledge timer 0A capture flag
    }
    else{
       TIMER0_ICR_R = TIMER_ICR_CAECINT; // Acknowledge timer 0A Interrupt
       TIMER0_CTL_R &= ~0x00000100;      //Disable Timer0B Interrupts
       pulseWidth = ((TIMER0_TAR_R&0xFFFF) - (TIMER0_TBR_R&0xFFFF));
       distanceCM = (0.5*pulseWidth*CLOCK_TICK*SPEED_SOUND);
+
+      if(distanceCM < 7)
+      {
+          distanceCM = 4;
+      }
+      else if(distanceCM < 5)
+      {
+          distanceCM = 3;
+      }
+      else if(distanceCM > 60)
+      {
+          distanceCM = 0;
+      }
+      else if((distanceCM < 60) && (distanceCM > 30))
+      {
+        distanceCM = 40;
+      }
+      len = sizeof(position_arr)/sizeof(uint16_t);
+       // populate_array(distanceCM, sample_count, position_arr, len); // compute average to reduce noise
+      if (sample_count > len) {
+        //compute_average(position_arr, &mean_distance, len);
+      }
       risingEdgeMeasured = 0;
       measured = 1;
-      if(count%5== 0 && measured && distanceCM > 4 && distanceCM < 55){
-         UART_OutUDec(distanceCM);
-         UART_OutChar('\n');
+      if(count%5== 0 && measured && distanceCM > 0 && distanceCM < 2000){
+         if(1){
+           UART_OutUDec((uint16_t)distanceCM);
+           UART_OutChar('\n');
+         }
+         //UART1_OutUDec((uint16_t)distanceCM);
+         // UART1_OutChar('\n');
          count = 0;
-         //measured = 0;
+        // measured = 0;
       }
       overFlowCount = 0;
       //Restart_measurement();
@@ -183,6 +294,7 @@ void Initialize_HCS04(void)
 {
     EnableEdgeModeTimers();
     UART_Init();
+    UART1_Init();
     TriggerSignalEnable();
     Timer1AB_Init();
 }

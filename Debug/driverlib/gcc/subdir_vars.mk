@@ -6,9 +6,9 @@ SHELL = cmd.exe
 
 # Add inputs and outputs from these tool invocations to the build variables 
 A_SRCS += \
-C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/gcc/libdriver.a 
+../driverlib/gcc/libdriver.a 
 
 A_SRCS__QUOTED += \
-"C:/Users/Max/Desktop/TivaWare_C_Series-2.1.3.156/driverlib/gcc/libdriver.a" 
+"../driverlib/gcc/libdriver.a" 
 
 

@@ -6,6 +6,7 @@ algo/PID_driver.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.0.LTS/include/li
 algo/PID_driver.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.0.LTS/include/stdarg.h
 algo/PID_driver.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.0.LTS/include/stdlib.h
 algo/PID_driver.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.0.LTS/include/stdint.h
+algo/PID_driver.obj: ../algo/moving_average_double.h
 
 ../algo/PID_driver.c: 
 C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.0.LTS/include/stdio.h: 
@@ -13,3 +14,4 @@ C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.0.LTS/include/linkage.h:
 C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.0.LTS/include/stdarg.h: 
 C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.0.LTS/include/stdlib.h: 
 C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.0.LTS/include/stdint.h: 
+../algo/moving_average_double.h: 

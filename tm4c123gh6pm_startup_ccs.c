@@ -47,7 +47,7 @@ extern void Timer1B_Handler(void);
 extern void Timer0A_Handler(void);
 extern void Timer0B_Handler(void);
 extern void Timer2A_Handler(void);
-
+extern void SysTick_Handler(void);
 
 //*****************************************************************************
 //
@@ -89,7 +89,7 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // Debug monitor handler
     0,                                      // Reserved
     IntDefaultHandler,                      // The PendSV handler
-    IntDefaultHandler,                      // The SysTick handler
+    SysTick_Handler,                      // The SysTick handler
     IntDefaultHandler,                      // GPIO Port A
     IntDefaultHandler,                      // GPIO Port B
     IntDefaultHandler,                      // GPIO Port C
