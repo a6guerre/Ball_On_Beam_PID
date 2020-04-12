@@ -129,7 +129,6 @@ void Timer2AB_Init(void){
   NVIC_PRI5_R = (NVIC_PRI5_R & 0x00FFFFFF)|0x30000000; // priority 2 for both timers
   NVIC_PRI6_R = (NVIC_PRI6_R & 0xFFFFFF00)|0x00000030; // priority 2 for both timers
   NVIC_EN0_R |= 0x01800000;                 // enable interrupt 19 in NVIC
-  //TIMER2_CTL_R |= 0x00000101;               // enable timer1A and timer 1B
   GPIO_PORTA_DATA_R |= 0x40;                // Enable trigger signal
 }
 
@@ -206,16 +205,12 @@ void Timer0A_Handler(void){
            UART_OutUDec((uint16_t)distanceCM);
            UART_OutChar('\n');
          }
-         //UART1_OutUDec((uint16_t)distanceCM);
-         // UART1_OutChar('\n');
          count = 0;
-        // measured = 0;
       }
       overFlowCount = 0;
 
    }
    TIMER3_CTL_R |= 0x00000101;
-   //Restart_measurement();
 }
 
 void Timer3A_Handler(void){
@@ -249,10 +244,6 @@ void Timer3A_Handler(void){
       }
      if(distanceCM_2 > 35)
       {
-          //TIMER2_CTL_R &= ~0x00000101;  // disable this sensor
-         // UART_OutUDec((uint16_t)distanceCM_2);
-         // UART_OutChar('\n');
-          //TIMER1_CTL_R |=  0x00000101;   // enable measurements in other sensor
           TIMER0_CTL_R |= 0x00000101;      // Re-Enable Timer0B/0A Interrupts
           Restart_measurement_2();
           Restart_measurement();
@@ -272,8 +263,6 @@ void Timer3A_Handler(void){
       overFlowCount = 0;
    }
    TIMER0_CTL_R |= 0x00000101;      // Re-Enable imer0B/0A Interrupts
-   //Restart_measurement_2();
-   //Restart_measurement();
 }
 
 void Timer0B_Handler(void){

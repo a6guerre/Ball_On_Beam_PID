@@ -86,27 +86,9 @@ int main(void) {
           }
           output_net = 10*(error[0] + error[1]);
           PWM_Set_Servo(PWM0_BASE, PWM_OUT_2, ((error[0] + error[1])));
-          SysCtlDelay(1000); //change back to 40000
+          SysCtlDelay(1000); //change this to change sample rate
           measured = 0;
-         // Restart_measurement();
-         // Restart_measurement_2();
        }
-//        int i;
-//        for(idx = 0; idx < max; idx+=5){
-//           PWM_Set_Servo(PWM0_BASE, PWM_OUT_2, idx);
-//           SysCtlDelay(40000);
-//        }
-//        for(i = 0; i < 5; ++i){
-//            SysCtlDelay(2000000);
-//        }
-//        for(idx = max; idx > min; idx-=5){
-//           PWM_Set_Servo(PWM0_BASE, PWM_OUT_2, idx);
-//           SysCtlDelay(40000);
-//        }
-//        for(i = 0; i < 5; ++i){
-//            SysCtlDelay(2000000);
-//        }
-
     }
     return 0;
 }
