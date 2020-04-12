@@ -10,7 +10,7 @@
 
 #include "moving_average_double.h"
 
-double k[] = {2.9, 0.06}; //2.8, 0.0425 smoothest so far
+double k[] = {2.85, 0.0000}; //2.5, 40 smoothest so far
 double error[2];
 
 double current_error, prev_error;
@@ -34,15 +34,7 @@ double compute_PID(uint16_t set_point, uint16_t current_value, uint32_t tick_cou
    error[1] = k[1]*(delta_error/dt);
 
    int len = sizeof(dev_error_arr)/sizeof(double);
-   //populate_array_double(error[1], count, dev_error_arr, len);
-   if (count > len && 0){
-     //mean_dev_error = compute_average_double(dev_error_arr, len);
-     //error[1] = mean_dev_error;
-     //if( error[1] != 0)
-    // {
-    //    error[1] = error[1];
-    // }
-   }
+
    time_prev = time_now;
    prev_error = current_error;
 

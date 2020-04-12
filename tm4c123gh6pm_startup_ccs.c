@@ -47,6 +47,9 @@ extern void Timer1B_Handler(void);
 extern void Timer0A_Handler(void);
 extern void Timer0B_Handler(void);
 extern void Timer2A_Handler(void);
+extern void Timer2B_Handler(void);
+extern void Timer3A_Handler(void);
+extern void Timer3B_Handler(void);
 extern void SysTick_Handler(void);
 
 //*****************************************************************************
@@ -114,7 +117,7 @@ void (* const g_pfnVectors[])(void) =
     Timer1A_Handler,                        // Timer 1 subtimer A
     Timer1B_Handler,                        // Timer 1 subtimer B
     Timer2A_Handler,                        // Timer 2 subtimer A
-    IntDefaultHandler,                        // Timer 2 subtimer B
+    Timer2B_Handler,                        // Timer 2 subtimer B
     IntDefaultHandler,                      // Analog Comparator 0
     IntDefaultHandler,                      // Analog Comparator 1
     IntDefaultHandler,                      // Analog Comparator 2
@@ -125,8 +128,8 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // GPIO Port H
     IntDefaultHandler,                      // UART2 Rx and Tx
     IntDefaultHandler,                      // SSI1 Rx and Tx
-    IntDefaultHandler,                      // Timer 3 subtimer A
-    IntDefaultHandler,                      // Timer 3 subtimer B
+    Timer3A_Handler,                        // Timer 3 subtimer A
+    Timer3B_Handler,                        // Timer 3 subtimer B
     IntDefaultHandler,                      // I2C1 Master and Slave
     IntDefaultHandler,                      // Quadrature Encoder 1
     IntDefaultHandler,                      // CAN0

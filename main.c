@@ -15,17 +15,21 @@
 #include "driverlib/pin_map.h"
 #include "driverlib/uart.h"
 #include "driverlib/debug.h"
+#include "PWM_Driver.h"
 
-uint16_t set_point = 9.0;
+uint16_t set_point = 13.0;
 extern uint16_t distanceCM;
+extern uint16_t distanceCM_2;
 extern int count;
 extern int measured;
+extern uint8_t isMainSensor;
 double output;
 extern int error[2];
 extern uint32_t time_now;
 extern uint32_t time_prev;
 extern uint16_t mean_distance;
 uint32_t tick_count;
+double output_net;
 
 void Config_SysTick(void)
 {
@@ -71,11 +75,21 @@ int main(void) {
        ++count;
        if(measured)
        {
-          output = compute_PID(set_point, distanceCM, tick_count);
-          PWM_Set_Servo(PWM0_BASE, PWM_OUT_2, 10*(error[0] + error[1]));
+          if(isMainSensor) {
+             output = compute_PID(set_point, distanceCM, tick_count);
+             Restart_measurement();
+          }
+          else
+          {
+             output = compute_PID(set_point, distanceCM_2, tick_count);
+             Restart_measurement_2();
+          }
+          output_net = 10*(error[0] + error[1]);
+          PWM_Set_Servo(PWM0_BASE, PWM_OUT_2, ((error[0] + error[1])));
           SysCtlDelay(1000); //change back to 40000
           measured = 0;
-          Restart_measurement();
+         // Restart_measurement();
+         // Restart_measurement_2();
        }
 //        int i;
 //        for(idx = 0; idx < max; idx+=5){
@@ -105,4 +119,6 @@ void SysTick_Handler(void)
       tick_count = 0x00;
    }
    GPIO_PORTF_DATA_R ^= 0x02;
+   Restart_measurement();
+   Restart_measurement_2();
 }

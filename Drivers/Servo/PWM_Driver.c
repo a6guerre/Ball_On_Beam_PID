@@ -24,7 +24,7 @@
 
 #define SERVO_DRIVE_FREQ 50
 #define SERVO_DRIVE_PER 0.02
-#define SERVO_NEUTRAL 273
+#define SERVO_NEUTRAL 295
 #define SERVO_MAX 351
 #define SERVO_MIN 117
 uint32_t ui32PWM_Freq;

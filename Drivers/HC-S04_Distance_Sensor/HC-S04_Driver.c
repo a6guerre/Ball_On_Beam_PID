@@ -18,89 +18,20 @@
 
 uint16_t hi;
 uint16_t pulseWidth = 0; // Needs to be this data type to be congruent with register values.
+uint16_t pulseWidth_2 = 0; // Needs to be this data type to be congruent with register values.
 uint16_t risingEdge;
 uint16_t distanceCM;
+uint16_t distanceCM_2;
 uint16_t position_arr[100];
 uint16_t mean_distance;
+
+uint8_t  isMainSensor = 1;
 
 unsigned int overFlowCount;
 unsigned int risingEdgeMeasured = 0;
 int measured = 0;
 int count;
 static int sample_count;
-
-//int main(void)
-//{
-//    SysCtlClockSet(SYSCTL_SYSDIV_16| SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ |SYSCTL_OSC_MAIN); //Set up clock to run at 12.5MHz
-//    Initialize_HCS04();
-//    Distance_Measure_Enable();
-//    IntMasterEnable();
-//    while(1){
-//      ++count;
-//      if(measured)
-//      {
-//         Restart_measurement();
-//         measured = 0;
-//      }
-//    }
-//    return 0;
-//}
-
-/*void UART_Init(void){
-  SYSCTL_RCGC1_R |= SYSCTL_RCGC1_UART0; // activate UART0
-  SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOA; // activate port A
-  UART0_CTL_R &= ~UART_CTL_UARTEN;      // disable UART
-  UART0_IBRD_R = 6;                    // IBRD = int(12,500,000 / (16 * 115,200)) = int(6.7816)
-  UART0_FBRD_R = 50;                     // FBRD = int(0.7816 * 64 + 0.5) = 8
-                                        // 8 bit word length (no parity bits, one stop bit, FIFOs)
-  UART0_LCRH_R = (UART_LCRH_WLEN_8|UART_LCRH_FEN);
-  UART0_CTL_R |= UART_CTL_UARTEN;       // enable UART
-  GPIO_PORTA_AFSEL_R |= 0x03;           // enable alt funct on PA1-0
-  GPIO_PORTA_DEN_R |= 0x03;             // enable digital I/O on PA1-0
-}
-
-void UART1_Init(void){
-  SYSCTL_RCGC1_R |= SYSCTL_RCGC1_UART1; // activate UART0
-
-  UART1_CTL_R &= ~UART_CTL_UARTEN;      // disable UART
-  UART1_IBRD_R = 6;                    // IBRD = int(12,500,000 / (16 * 115,200)) = int(6.7816)
-  UART1_FBRD_R = 50;                     // FBRD = int(0.7816 * 64 + 0.5) = 8
-                                        // 8 bit word length (no parity bits, one stop bit, FIFOs)
-  UART1_LCRH_R = (UART_LCRH_WLEN_8|UART_LCRH_FEN);
-  UART1_CTL_R |= UART_CTL_UARTEN;       // enable UART
-  GPIO_PORTB_AFSEL_R |= 0x03;           // enable alt funct on PA1-0
-  GPIO_PORTB_DEN_R |= 0x03;             // enable digital I/O on PA1-0
-}
-
-void UART_OutChar(unsigned char data){
-  while((UART0_FR_R&UART_FR_TXFF) != 0);
-  UART0_DR_R = data;
-}
-
-void UART1_OutChar(unsigned char data){
-  while((UART1_FR_R&UART_FR_TXFF) != 0);
-  UART1_DR_R = data;
-}
-
-void UART1_OutUDec(unsigned long n){
-// This function uses recursion to convert decimal number
-//   of unspecified length as an ASCII string
-  if(n >= 10){
-    UART1_OutUDec(n/10);
-    n = n%10;
-  }
-  UART1_OutChar(n+'0');
-}*/
-/*
-void UART_OutUDec(unsigned long n){
-// This function uses recursion to convert decimal number
-//   of unspecified length as an ASCII string
-  if(n >= 10){
-    UART_OutUDec(n/10);
-    n = n%10;
-  }
-  UART_OutChar(n+'0'); // n is between 0 and 9
-}*/
 
 void TriggerSignalEnable(){
     SYSCTL_RCGC2_R |= 0x01;
@@ -109,6 +40,14 @@ void TriggerSignalEnable(){
     GPIO_PORTA_DIR_R |= 0x80;        // 5) set direction to output
     GPIO_PORTA_AFSEL_R &= ~0x80;      // 6) regular port function
     GPIO_PORTA_DEN_R |= 0x80;         // 7) enable digital port
+}
+
+void TriggerSignalEnableRedundant(){
+    GPIO_PORTA_PCTL_R &= ~0x0F000000; // 3) regular GPIO
+    GPIO_PORTA_AMSEL_R &= ~0x40;      // 4) disable analog function on PA7
+    GPIO_PORTA_DIR_R |= 0x40;        // 5) set direction to output
+    GPIO_PORTA_AFSEL_R &= ~0x40;      // 6) regular port function
+    GPIO_PORTA_DEN_R |= 0x40;         // 7) enable digital port
 }
 
 void EnableEdgeModeTimers(){
@@ -134,6 +73,29 @@ void EnableEdgeModeTimers(){
     NVIC_EN0_R |= 0x0180000;
 }
 
+void EnableEdgeModeTimersRedundant(){
+    SYSCTL_RCGC1_R |= SYSCTL_RCGC1_TIMER3;
+    SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOB;//Enable Input capture pins CCP0 and CCP1
+
+    GPIO_PORTB_DEN_R |= 0x04;
+    GPIO_PORTB_AFSEL_R |= 0x04;
+    GPIO_PORTB_DEN_R |= 0x08;
+    GPIO_PORTB_AFSEL_R |= 0x08;
+    GPIO_PORTB_PCTL_R |= 0x00007700;
+
+    TIMER3_CTL_R &= ~0x101;
+    TIMER3_CFG_R  = 0x00000004;
+    TIMER3_TAMR_R = 0x00000017;
+    TIMER3_TBMR_R = 0x00000017;
+    TIMER3_CTL_R =  (TIMER3_CTL_R &~0x00C) + 0x04; // Timer3A is falling (PB2)
+    TIMER3_CTL_R &= ~0xC00;                        // Timer3B is rising edge (PB3)
+    TIMER3_IMR_R |= 0x404;
+    TIMER3_ICR_R |= 0x404;
+    NVIC_PRI8_R = (NVIC_PRI8_R&0x00FFFFFF)|0x40000000;  // Set up NVIC for Timers3A&B since be using interrupt driven
+    NVIC_PRI9_R = (NVIC_PRI9_R&0xFFFFFF00)|0x00000040;
+    NVIC_EN1_R |= 0x18;
+}
+
 void Timer1AB_Init(void){
   SYSCTL_RCGC1_R |= SYSCTL_RCGC1_TIMER1;   // activate timer1
   TIMER1_CTL_R &= ~0x00000101;             // disable timer1A and timer 1B during setup
@@ -152,6 +114,25 @@ void Timer1AB_Init(void){
   GPIO_PORTA_DATA_R |= 0x80;                // Enable trigger signal
 }
 
+void Timer2AB_Init(void){
+  SYSCTL_RCGC1_R |= SYSCTL_RCGC1_TIMER2;   // activate timer1
+  TIMER2_CTL_R &= ~0x00000101;             // disable timer1A and timer 1B during setup
+  TIMER2_CFG_R =  0x00000004;              // configure for 16-bit timer mode
+  TIMER2_TAMR_R = 0x00000001;              // configure for one shot
+  TIMER2_TBMR_R = 0x00000001;              // Configure as a one shot timer
+  TIMER2_TAILR_R =  100;                   // The "period" of the trigger signal, (could try to make it smaller)
+  TIMER2_TBILR_R =  10;                    // So that trigger signal is at least 10usec
+  TIMER2_TAPR_R =   1;                     // No Prescaler
+  TIMER2_TBPR_R =   1;
+  TIMER2_ICR_R =  0x00000101;               // clear timer1A and timer 1B timeout flag
+  TIMER2_IMR_R |= 0x00000101;               // arm timeout interrupt
+  NVIC_PRI5_R = (NVIC_PRI5_R & 0x00FFFFFF)|0x30000000; // priority 2 for both timers
+  NVIC_PRI6_R = (NVIC_PRI6_R & 0xFFFFFF00)|0x00000030; // priority 2 for both timers
+  NVIC_EN0_R |= 0x01800000;                 // enable interrupt 19 in NVIC
+  //TIMER2_CTL_R |= 0x00000101;               // enable timer1A and timer 1B
+  GPIO_PORTA_DATA_R |= 0x40;                // Enable trigger signal
+}
+
 void Distance_Measure_Enable()
 {
    TIMER1_CTL_R |= 0x00000101;               // enable timer1A and timer 1B, trigger signal generators
@@ -163,55 +144,12 @@ void Restart_measurement()
    TIMER1_CTL_R |= 0x01;             //  "Schedule" start trigger after TIME1A Timeout
 }
 
-/*void pop_and_push(uint16_t *position_arr, uint16_t val)
+void Restart_measurement_2()
 {
-   int i;
-   int len = sizeof(position_arr)/sizeof(uint16_t);
-   for (i = 0; i < len - 1; ++i)
-   {
-      position_arr[i + 1] = position_arr[i];
-   }
-   position_arr[0] = val;
-
+   TIMER3_CTL_R &= ~0x00000001;      // Input capture until trigger signal enable again.
+   TIMER2_CTL_R |= 0x01;             //  "Schedule" start trigger after TIME2A Timeout
 }
 
-void compute_sum(uint16_t *arr, int *sum, int len)
-{
-   int i;
-   *sum = 0;
-   for(i = 0;  i < len; ++i)
-   {
-      *sum += arr[i];
-   }
-}
-
-void print_mean(uint16_t mean)
-{
-  UART_OutUDec(mean);
-  UART_OutChar('\n');
-}
-
-uint16_t compute_average(uint16_t *position_arr)
-{
-   int len = sizeof(position_arr)/sizeof(uint16_t);
-   int sum;
-   compute_sum(position_arr, &sum, len);
-   uint16_t mean = (uint16_t)(sum/len);
-   print_mean(mean);
-   return (uint16_t)(sum/len);
-}
-
-void populate_array(uint16_t measured_distance, int sample_count, uint16_t *position_arr)
-{
-   if (sample_count < (sizeof(position_arr)/sizeof(uint16_t) + 1))
-   {
-     position_arr[sample_count - 1] = measured_distance;
-   }
-   else
-   {
-      pop_and_push(position_arr, measured_distance);
-   }
-}*/
 
 void Timer0A_Handler(void){
    ++sample_count;
@@ -222,16 +160,18 @@ void Timer0A_Handler(void){
    else{
       TIMER0_ICR_R = TIMER_ICR_CAECINT; // Acknowledge timer 0A Interrupt
       TIMER0_CTL_R &= ~0x00000100;      //Disable Timer0B Interrupts
+      TIMER3_CTL_R &= ~0x00000101;      //Disable Timer0B and Timer0A Interrupts
+      TIMER2_CTL_R &= ~0x00000101;
       pulseWidth = ((TIMER0_TAR_R&0xFFFF) - (TIMER0_TBR_R&0xFFFF));
       distanceCM = (0.5*pulseWidth*CLOCK_TICK*SPEED_SOUND);
-
+      measured = 1;
       if(distanceCM < 7)
       {
-          distanceCM = 4;
+          //distanceCM = 2;
       }
       else if(distanceCM < 5)
       {
-          distanceCM = 3;
+         // distanceCM = 0;
       }
       else if(distanceCM > 60)
       {
@@ -247,7 +187,20 @@ void Timer0A_Handler(void){
         //compute_average(position_arr, &mean_distance, len);
       }
       risingEdgeMeasured = 0;
-      measured = 1;
+      if(distanceCM > 14)
+      {
+         //TIMER2_CTL_R |=  0x00000101;  // Use other sensor for data.
+         //TIMER1_CTL_R &= ~0x00000101;
+         TIMER3_CTL_R &= ~0x00000101;
+        // UART_OutUDec((uint16_t)distanceCM);
+         Restart_measurement();
+         Restart_measurement_2();
+         TIMER3_CTL_R |= 0x00000101;
+         isMainSensor = 0;
+         return;
+      }
+      isMainSensor = 1;
+
       if(count%5== 0 && measured && distanceCM > 0 && distanceCM < 2000){
          if(1){
            UART_OutUDec((uint16_t)distanceCM);
@@ -259,13 +212,79 @@ void Timer0A_Handler(void){
         // measured = 0;
       }
       overFlowCount = 0;
-      //Restart_measurement();
+
    }
+   TIMER3_CTL_R |= 0x00000101;
+   //Restart_measurement();
+}
+
+void Timer3A_Handler(void){
+
+   if(!risingEdgeMeasured){
+      TIMER3_ICR_R |= TIMER_ICR_CAECINT; // Acknowledge timer 0A capture flag
+   }
+   else{
+      TIMER3_ICR_R = TIMER_ICR_CAECINT; // Acknowledge timer 0A Interrupt
+      TIMER3_CTL_R &= ~0x00000100;      //Disable Timer3B Interrupts
+      TIMER0_CTL_R &= ~0x00000101;      //Disable Timer0B/0A Interrupts
+      TIMER1_CTL_R &= ~0x00000101;
+      pulseWidth_2 = ((TIMER3_TAR_R&0xFFFF) - (TIMER3_TBR_R&0xFFFF));
+      distanceCM_2 = (0.5*pulseWidth_2*CLOCK_TICK*SPEED_SOUND);
+      measured = 1;
+     if(distanceCM_2 < 7)
+     {
+         // distanceCM_2 = 2;
+      }
+      else if(distanceCM_2 < 5)
+      {
+         // distanceCM = 0;
+      }
+      else if(distanceCM_2 > 60)
+      {
+          distanceCM_2 = 0;
+      }
+      else if((distanceCM_2 < 60) && (distanceCM_2 > 30))
+      {
+        //distanceCM_2 = 40;
+      }
+     if(distanceCM_2 > 35)
+      {
+          //TIMER2_CTL_R &= ~0x00000101;  // disable this sensor
+         // UART_OutUDec((uint16_t)distanceCM_2);
+         // UART_OutChar('\n');
+          //TIMER1_CTL_R |=  0x00000101;   // enable measurements in other sensor
+          TIMER0_CTL_R |= 0x00000101;      // Re-Enable Timer0B/0A Interrupts
+          Restart_measurement_2();
+          Restart_measurement();
+          isMainSensor = 1;
+          return;
+      }
+      isMainSensor = 0;
+      distanceCM_2 = 2*15 - distanceCM_2;  // Symmetry
+      risingEdgeMeasured = 0;
+      if(count%5== 0 && measured && distanceCM_2 > 0 && distanceCM_2 < 2000){
+         if(1){
+           UART_OutUDec((uint16_t)distanceCM_2);
+           UART_OutChar('\n');
+         }
+         count = 0;
+      }
+      overFlowCount = 0;
+   }
+   TIMER0_CTL_R |= 0x00000101;      // Re-Enable imer0B/0A Interrupts
+   //Restart_measurement_2();
+   //Restart_measurement();
 }
 
 void Timer0B_Handler(void){
     risingEdgeMeasured = 1;
     TIMER0_ICR_R |= 0x00000400; //acknowledge timer 0B capture flag
+}
+
+void Timer3B_Handler(void)
+{
+    risingEdgeMeasured = 1;
+    TIMER3_ICR_R |= 0x00000400; //acknowledge timer 3B capture flag
 }
 
 void Timer1A_Handler(void){
@@ -275,6 +294,7 @@ void Timer1A_Handler(void){
 }
 
 void Timer1B_Handler(void){
+    IntMasterDisable();
     TIMER1_ICR_R = TIMER_ICR_TBTOCINT;
     GPIO_PORTA_DATA_R &= ~0x80;
     TIMER0_TAV_R &= ~0xFFFF;          // Clear the bottom 15:0 bits
@@ -282,19 +302,35 @@ void Timer1B_Handler(void){
     TIMER1_CTL_R &= ~0x00000001;      // Disable timer interrupts right after we trigger
     TIMER0_CTL_R |=  0x00000101;      // enable timer0A and timer 0B
     GPIO_PORTA_DATA_R &= ~0x80;
+    IntMasterEnable();
+}
+
+void Timer2B_Handler(void){
+    IntMasterDisable();
+    TIMER2_ICR_R = TIMER_ICR_TBTOCINT;
+    GPIO_PORTA_DATA_R &= ~0x40;
+    TIMER3_TAV_R &= ~0xFFFF;          // Clear the bottom 15:0 bits
+    TIMER3_TBV_R &= ~0xFFFF;
+    TIMER2_CTL_R &= ~0x00000001;      // Disable timer interrupts right after we trigger
+    TIMER3_CTL_R |=  0x00000101;      // enable timer3A and timer 3B
+    GPIO_PORTA_DATA_R &= ~0x40;
+    IntMasterEnable();
 }
 
 void Timer2A_Handler(void){
-   TIMER2_ICR_R  = TIMER_ICR_TATOCINT;
-   TIMER2_CTL_R |= 0x00000001;
-   ++overFlowCount;
+    TIMER2_ICR_R = TIMER_ICR_TATOCINT;
+    GPIO_PORTA_DATA_R = 0x40;
+    TIMER2_CTL_R |= 0x00000100; // Re enable one shot timer
 }
 
 void Initialize_HCS04(void)
 {
     EnableEdgeModeTimers();
+    EnableEdgeModeTimersRedundant();
     UART_Init();
     UART1_Init();
     TriggerSignalEnable();
+    TriggerSignalEnableRedundant();
     Timer1AB_Init();
+    Timer2AB_Init();
 }

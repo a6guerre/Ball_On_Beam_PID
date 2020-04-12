@@ -20,6 +20,7 @@ void UART_OutChar(unsigned char data);
 void UART_OutUDec(unsigned long n);
 void Distance_Measure_Enable(void);
 void Restart_measurement(void);
+void Restart_measurement_2(void);
 void Initialize_HCS04(void);
 
 #endif /* HC_S04_DRIVER_H_ */

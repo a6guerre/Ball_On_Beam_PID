@@ -20,6 +20,7 @@ main.obj: ../driverlib/timer.h
 main.obj: ../driverlib/pin_map.h
 main.obj: ../driverlib/uart.h
 main.obj: ../driverlib/debug.h
+main.obj: ../PWM_Driver.h
 
 ../main.c: 
 C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.0.LTS/include/stdint.h: 
@@ -41,3 +42,4 @@ C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.0.LTS/include/stdbool.h:
 ../driverlib/pin_map.h: 
 ../driverlib/uart.h: 
 ../driverlib/debug.h: 
+../PWM_Driver.h: 
